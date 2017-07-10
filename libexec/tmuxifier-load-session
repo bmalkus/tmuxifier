@@ -42,4 +42,5 @@ if [ "$2" == "-CC" ]; then
 fi
 
 # Load session file.
+export args=("${@:2}")
 load_session "$1"

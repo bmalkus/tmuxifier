@@ -35,6 +35,7 @@ source "$TMUXIFIER/lib/runtime.sh"
 
 if [ ! -z $TMUX ]; then
   session="$(tmuxifier-current-session)"
+  export args=("${@:2}")
   load_window "$1"
 else
   echo "tmuxifier: 'load-window' command can only be used from within Tmux."
