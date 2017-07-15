@@ -402,3 +402,40 @@ __go_to_window_or_session_path() {
     run_cmd "clear"
   fi
 }
+
+wait_for_text() {
+  __wait_for_text_helper "$@"
+}
+
+capture_pane() {
+  eval 'export prev'$1'="$(tmux capture-pane -S -1000 -t "$session:$window.'$1'" -p)"'
+}
+
+__wait_for_text_helper() {
+  export session
+  export window
+  prev_cand="$(trap 'kill $timeout_pid' INT; timeout $2 bash -c '
+  pr="$prev'$3'";
+  while :; do
+    curr="$(tmux capture-pane -S -1000 -t "$session:$window.'$3'" -p)";
+    curr_lines=$(wc -l <<< "$curr");
+    prev_lines=$(wc -l <<< "$pr");
+    if [[ $curr_lines -gt $prev_lines ]]; then
+      tail -n $((curr_lines - prev_lines)) <<< "$curr" >&2;
+      tail -n $((curr_lines - prev_lines)) <<< "$curr" | grep -qE "'"$1"'" && break;
+    else
+      diff --unchanged-line-format="" --old-line-format="" <(echo "$pr") <(echo "$curr") | grep -qE "'"$1"'" && break;
+    fi
+    pr="$curr";
+    sleep 0.5s;
+  done;
+  echo "$curr"' & timeout_pid=$!; wait $timeout_pid)"
+  ret=$?
+  if [[ $ret -eq 0 ]]; then
+    eval 'export prev'$3'="$prev_cand"'
+  fi
+  return $ret
+}
+
+# curr_lines=$(wc -l <<< "$curr");
+# diff --unchanged-line-format="" --old-line-format="" <(echo "$prev") <(echo "$curr") >&2;
