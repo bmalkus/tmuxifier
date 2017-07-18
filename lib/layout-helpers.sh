@@ -417,7 +417,7 @@ __wait_for_text_helper() {
   prev_cand="$(trap 'kill $timeout_pid' INT; timeout $2 bash -c '
   pr="$prev'$3'";
   while :; do
-    curr="$(tmux capture-pane -S -1000 -t "$session:$window.'$3'" -p)";
+    curr="$(tmux capture-pane -S -1000 -t "$session:$window.'$3'" -p)" || exit $?;
     curr_lines=$(wc -l <<< "$curr");
     prev_lines=$(wc -l <<< "$pr");
     if [[ $curr_lines -gt $prev_lines ]]; then
