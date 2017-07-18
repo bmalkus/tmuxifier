@@ -38,7 +38,7 @@ new_window() {
 #
 split_v() {
   if [ -n "$1" ]; then local percentage=(-p "$1"); fi
-  tmuxifier-tmux split-window -t "$session:$window.$2" -v "${percentage[@]}"
+  tmuxifier-tmux split-window ${@:3} -t "$session:$window.$2" -v "${percentage[@]}"
   __go_to_window_or_session_path
 }
 
@@ -50,7 +50,7 @@ split_v() {
 #
 split_h() {
   if [ -n "$1" ]; then local percentage=(-p "$1"); fi
-  tmuxifier-tmux split-window -t "$session:$window.$2" -h "${percentage[@]}"
+  tmuxifier-tmux split-window ${@:3} -t "$session:$window.$2" -h "${percentage[@]}"
   __go_to_window_or_session_path
 }
 
@@ -62,7 +62,7 @@ split_h() {
 #
 split_vl() {
   if [ -n "$1" ]; then local count=(-l "$1"); fi
-  tmuxifier-tmux split-window -t "$session:$window.$2" -v "${count[@]}"
+  tmuxifier-tmux split-window ${@:3} -t "$session:$window.$2" -v "${count[@]}"
   __go_to_window_or_session_path
 }
 
@@ -74,7 +74,7 @@ split_vl() {
 #
 split_hl() {
   if [ -n "$1" ]; then local count=(-l "$1"); fi
-  tmuxifier-tmux split-window -t "$session:$window.$2" -h "${count[@]}"
+  tmuxifier-tmux split-window ${@:3} -t "$session:$window.$2" -h "${count[@]}"
   __go_to_window_or_session_path
 }
 
